@@ -1,21 +1,21 @@
 console.log('running')
 var sampleData = [
-    { "id":  1, "name": "Me", "children": [4], "partners" : [2,3], root:true, level: 0, "parents": [8,9] },
-    { "id":  2, "name": "Mistress", "children": [4], "partners" : [1], level: 0, "parents": [] },
-    { "id":  3, "name": "Wife", "children": [5], "partners" : [1], level: 0, "parents": [] },
-    { "id":  4, "name": "Son", "children": [], "partners" : [], level: -1, "parents": [1,2] },
-    { "id":  5, "name": "Daughter", "children": [7], "partners" : [6], level: -1, "parents": [1,3] },
-    { "id":  6, "name": "Boyfriend", "children": [7], "partners" : [5], level: -1, "parents": [] },
-    { "id":  7, "name": "Son Last", "children": [], "partners" : [], level: -2, "parents": [5,6] },
-    { "id":  8, "name": "Jeff", "children": [1], "partners" : [9], level: 1, "parents": [10,11] },
-    { "id":  9, "name": "Maggie", "children": [1], "partners" : [8], level: 1, "parents": [13,14] },
-    { "id": 10, "name": "Bob", "children": [8], "partners" : [11], level: 2, "parents": [12] },
-    { "id": 11, "name": "Mary", "children": [], "partners" : [10], level: 2, "parents": [] },
-    { "id": 12, "name": "John", "children": [10], "partners" : [], level: 3, "parents": [] },
-    { "id": 13, "name": "Robert", "children": [9], "partners" : [14], level: 2, "parents": [] },
-    { "id": 14, "name": "Jessie", "children": [9], "partners" : [13], level: 2, "parents": [15,16] },
-    { "id": 15, "name": "Raymond", "children": [14], "partners" : [16], level: 3, "parents": [] },
-    { "id": 16, "name": "Betty", "children": [14], "partners" : [15], level: 3, "parents": [] },
+    { "id":  1, "name": "Me", "children": [4], "partners" : [2,3], "root":true, "level": 0, "parents": [8,9] },
+    { "id":  2, "name": "Mistress", "children": [4], "partners" : [1], "level": 0, "parents": [] },
+    { "id":  3, "name": "Wife", "children": [5], "partners" : [1], "level": 0, "parents": [] },
+    { "id":  4, "name": "Son", "children": [], "partners" : [], "level": -1, "parents": [1,2] },
+    { "id":  5, "name": "Daughter", "children": [7], "partners" : [6], "level": -1, "parents": [1,3] },
+    { "id":  6, "name": "Boyfriend", "children": [7], "partners" : [5], "level": -1, "parents": [] },
+    { "id":  7, "name": "Son Last", "children": [], "partners" : [], "level": -2, "parents": [5,6] },
+    { "id":  8, "name": "Jeff", "children": [1], "partners" : [9], "level": 1, "parents": [10,11] },
+    { "id":  9, "name": "Maggie", "children": [1], "partners" : [8], "level": 1, "parents": [13,14] },
+    { "id": 10, "name": "Bob", "children": [8], "partners" : [11], "level": 2, "parents": [12] },
+    { "id": 11, "name": "Mary", "children": [], "partners" : [10], "level": 2, "parents": [] },
+    { "id": 12, "name": "John", "children": [10], "partners" : [], "level": 3, "parents": [] },
+    { "id": 13, "name": "Robert", "children": [9], "partners" : [14], "level": 2, "parents": [] },
+    { "id": 14, "name": "Jessie", "children": [9], "partners" : [13], "level": 2, "parents": [15,16] },
+    { "id": 15, "name": "Raymond", "children": [14], "partners" : [16], "level": 3, "parents": [] },
+    { "id": 16, "name": "Betty", "children": [14], "partners" : [15], "level": 3, "parents": [] },
 ], 
 data = [], elements = [], levels = [], levelMap = [], 
 tree = document.getElementById('tree'), people = document.getElementById('people'), selectedNode, 
@@ -75,9 +75,35 @@ document.getElementById('addExisting').addEventListener('click', function() {
 document.getElementById('clear').addEventListener('click', startFresh);
 
 document.getElementById('sample').addEventListener('click', function() {
-    data = sampleData.slice();
-    plotTree();
-}); 
+    fetch('https://api.jsonbin.io/b/5bac3da09353c37b7435c5b5/1',{
+        method: 'GET',
+        headers: {
+            'secret-key': '$2a$10$P3mZ7RIbz4WdGKPvxuBXAucVbR5tEcRe6UUNJscSCcNRXoHYh2N6K'
+        }
+    })
+    .then(resp => resp.json())
+    .then(result => {
+        data = result.sampleData
+        plotTree();
+    })
+    .catch(error => console.log(error))
+});
+
+document.getElementById('saveData').addEventListener('click', function() {
+    var json = { sampleData : data }
+    console.log(JSON.stringify(json))
+    fetch('https://api.jsonbin.io/b/5bac3da09353c37b7435c5b5',{
+        method: 'PUT',
+        headers: {
+            'Content-Type':	'application/json',
+            'secret-key': '$2a$10$P3mZ7RIbz4WdGKPvxuBXAucVbR5tEcRe6UUNJscSCcNRXoHYh2N6K',
+            'versioning': false 
+        },
+        body: JSON.stringify(json)
+    })
+    .then(resp => console.log(resp))
+    .catch(error => console.log(error))
+});
 
 document.getElementById('download').addEventListener('click', function() {
     if (data.length > 1) {
@@ -97,6 +123,18 @@ function appInit() {
     // Approximate center of the div
     startTop = parseInt((tree.clientHeight / 2) - (size / 2)); 
     startLeft = parseInt((tree.clientWidth / 2) - (size / 2)); 
+    fetch('https://api.jsonbin.io/b/5bac3da09353c37b7435c5b5/1',{
+        method: 'GET',
+        headers: {
+            'secret-key': '$2a$10$P3mZ7RIbz4WdGKPvxuBXAucVbR5tEcRe6UUNJscSCcNRXoHYh2N6K'
+        }
+    })
+    .then(resp => resp.json())
+    .then(result => {
+        data = result.sampleData
+        plotTree();
+    })
+    .catch(error => console.log(error))
 }
 
 /* Start a fresh tree */
@@ -249,7 +287,7 @@ function createNodeElement(person) {
     var node = document.createElement('div');
     var picture = document.createElement('img');
     var textName = document.createElement('h3')
-    picture.setAttribute("src", 'user.png');
+    picture.setAttribute("src", person.picture ? person.picture : 'user.png');
     node.id = person.id; 
     node.classList.add('node'); node.classList.add('asset');
     textName.textContent = person.name; 
