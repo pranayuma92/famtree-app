@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fam tree</title>
+        <link rel="stylesheet" href="index.css" />
+    </head>
+    <body>
+        <div id="editor">
+            <h2 id="title">Me</h2>
+            <div>
+                <fieldset>
+                    <legend>Change Name</legend>
+                    <label>Name: <input id="pname" type="text" /></label>
+                    <br /><button id="save">Ok</button>
+                </fieldset>
+                <fieldset>
+                    <legend>Add Nodes</legend>
+                    <label for="relation">Add: </label>
+                    <select id="relation">
+                        <option value="partners">Partner</option>
+                        <option value="siblings">Sibling</option>
+                        <option value="parents">Parent</option>
+                        <option value="children">Child</option>
+                    </select>
+                    <button id="add">Ok</button><br />
+                    <label for="relation">Add: </label>
+                    <select id="people"></select>
+                    <button id="addExisting">As Parent</button>
+                </fieldset>
+                <fieldset>
+                    <legend>Picture</legend>
+                    <img src="" id="personPicture" width="90"/>
+                    <input type="file" id="uploadFile" />
+                    <input type="hidden" id="savedImage" />
+                </fieldset>
+                <fieldset>
+                    <legend>Misc</legend>
+                    <button id="clear">Clear</button>&nbsp;&nbsp;<button id="sample">Load Sample</button>
+              <br/><button id="download">Download Data</button>
+                </fieldset>
+            <fieldset id="downloadLink"></fieldset>
+            </div>
+        </div>
+        <div id="tree"></div>      
+        <script src="app.js"></script>  
+    </body>
+</html>
